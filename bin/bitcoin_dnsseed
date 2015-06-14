@@ -1,0 +1,75 @@
+#!/usr/bin/env ruby
+
+require 'bundler'
+Bundler.setup
+require 'bitcoin/node'
+require 'socket'
+require 'json'
+require 'rubydns'
+require 'yaml'
+
+Bitcoin::Node::Node # autoload to include Array#weighted_sample
+
+class Hash
+  def deep_symbolize_keys
+    map {|k, v| [k.to_sym, v.is_a?(Hash) ? v.deep_symbolize_keys : v] }.to_h
+  end
+end
+CONFIG = YAML.load_file(ARGV[0]).deep_symbolize_keys
+
+class RubyDNS::Server
+  attr_accessor :addrs
+end
+
+class AddrFetcher < EM::Connection
+  def initialize(name, dns, options)
+    @name, @dns, @options = name, dns, options
+    @dns.addrs ||= {}; @dns.addrs[@name] ||= []
+    @buf = BufferedTokenizer.new("\x00")
+    send_data '{"id": 0, "method": "addrs", "params": { "count": ' + options[:cache].to_s + '}}' + "\x00"
+  end
+
+  def receive_data(data)
+    @buf.extract(data).each do |packet|
+      json = JSON.load(packet)["result"]
+      @dns.logger.info { "received #{json.size} new addrs" }
+      @dns.addrs[@name] += json.select{|a| a[1] == @options[:port]}
+      @dns.addrs[@name].uniq! {|a| a[0]}
+      pop = @dns.addrs[@name].size - @options[:cache]
+      @dns.addrs[@name].pop(pop)  if pop > 0
+      @dns.logger.debug { "addr pool #{@name} size now #{@dns.addrs[@name].size}" }
+      close_connection
+    end
+  end
+
+  def self.run(host, port, name, dns, opts)
+    EM.connect(host, port.to_i, self, name, dns, opts)
+    EM.add_periodic_timer(opts[:interval]) do
+      EM.connect(host, port.to_i, self, name, dns, opts)
+    end
+  end
+end
+
+dns = RubyDNS::Server.new
+CONFIG.each do |name, opts|
+  dns.match(name.to_s, Resolv::DNS::Resource::IN::A) do |tx|
+    dns.addrs[name].weighted_sample(opts[:send]) {|a| 10800 - a[2] }.uniq.each do |addr|
+      begin
+        ttl = opts[:ttl].to_i || ((10800 - addr[2]) / 30)
+        tx.respond!(addr[0], ttl: ttl)
+      rescue
+        # ignore faulty addrs ("localhost" etc)
+      end
+    end
+  end
+end
+
+EM.run do
+  EventMachine.open_datagram_socket("0.0.0.0", 53, RubyDNS::UDPHandler, dns)
+  EventMachine.start_server("0.0.0.0", 53, RubyDNS::TCPHandler, dns)
+  dns.logger.info { "DNS Server listening on 0.0.0.0:53" }
+
+  CONFIG.each do |name, opts|
+    AddrFetcher.run(*opts[:connect], name, dns, opts)
+  end
+end

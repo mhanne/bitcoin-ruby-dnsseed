@@ -1,0 +1,27 @@
+= Bitcoin DNS Seed
+
+This is a bitcoin DNS seed based on bitcoin-ruby-node[http://github.com/mhanne/bitcoin-ruby-node].
+
+== Setup
+
+Copy `config.yml.sample` to `config.yml` and adjust according to your needs.
+
+Point a NS record to your server:
+
+ dnsseed.example.com IN NS example.com.
+
+Allow your user to bind to port 53:
+
+ sudo touch /etc/authbind/byport/53
+ sudo chown <user> /etc/authbind/byport/53
+ sudo chmod 755 /etc/authbind/byport/53
+
+And run the server:
+
+ authbind ruby bin/bitcoin_dnsseed config.yml
+
+== License
+
+Copyright © 2015 Marius Hanne <marius.hanne@sourceagency.org>
+
+This program is distributed under the terms of the MIT license. See COPYING for details.

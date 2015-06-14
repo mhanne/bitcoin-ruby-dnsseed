@@ -1,0 +1,14 @@
+# Configure seeds here, for example:
+dnsseed.example.com:
+  connect: ["127.0.0.1", 9999]
+  port: 8333
+  cache: 1024
+  send: 16
+  interval: 10
+
+dnsseed.test.example.com:
+  connect: ["127.0.0.1", 19999]
+  port: 18333
+  cache: 1024
+  send: 16
+  interval: 60

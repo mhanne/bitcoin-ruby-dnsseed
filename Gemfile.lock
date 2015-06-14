@@ -1,0 +1,47 @@
+GIT
+  remote: git://github.com/mhanne/bitcoin-ruby
+  revision: c2d779ecaf83adf7ff383a9b140387422a0349ba
+  branch: next
+  specs:
+    bitcoin-ruby (0.0.6)
+
+GIT
+  remote: git://github.com/mhanne/bitcoin-ruby-blockchain
+  revision: 117a69507bf5034025f13fa5bc631e0570e5db8a
+  specs:
+    bitcoin-ruby-blockchain (0.0.1)
+
+GIT
+  remote: git://github.com/mhanne/bitcoin-ruby-node
+  revision: 29605f8454b5f7e21eb57de984eaad40194d6262
+  specs:
+    bitcoin-ruby-node (0.0.1)
+
+GIT
+  remote: git://github.com/mhanne/bitcoin-ruby-wallet
+  revision: 953a26820ad87ea8d20a1762ec291cff28074040
+  specs:
+    bitcoin-ruby-wallet (0.0.1)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    eventmachine (1.0.7)
+    ffi (1.9.8)
+    rainbow (2.0.0)
+    rexec (1.5.2)
+      rainbow
+    rubydns (0.6.7)
+      eventmachine (~> 1.0.0)
+      rexec (~> 1.5.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bitcoin-ruby!
+  bitcoin-ruby-blockchain!
+  bitcoin-ruby-node!
+  bitcoin-ruby-wallet!
+  ffi
+  rubydns (~> 0.6.7)
