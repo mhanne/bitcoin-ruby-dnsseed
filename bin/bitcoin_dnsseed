@@ -55,19 +55,20 @@ class AddrFetcher < EM::Connection
   end
 end
 
-RubyDNS.run_server(listen: [[:udp, "0.0.0.0", 53], [:tcp, "0.0.0.0", 53]]) do
+RubyDNS.run_server(listen: [[:udp, *CONFIG[:listen]], [:tcp, *CONFIG[:listen]]]) do
 
   on(:start) do
     logger.info { "DNS Server listening on 0.0.0.0:53" }
     EM.run do
-      CONFIG.each do |name, opts|
+      CONFIG[:seeds].each do |name, opts|
         AddrFetcher.run(*opts[:connect], name, self, opts)
       end
     end
   end
 
-  CONFIG.each do |name, opts|
+  CONFIG[:seeds].each do |name, opts|
     match(/#{name}/i, Resolv::DNS::Resource::IN::A) do |tx|
+      (opts[:static] || []).each {|a| tx.respond!(a) }
       next tx.fail!(:NXDomain)  unless addrs
       addrs[name].weighted_sample(opts[:send]) {|a| 10800 - a[2] }.uniq.each do |addr|
         begin

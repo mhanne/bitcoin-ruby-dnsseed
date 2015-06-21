@@ -1,14 +1,26 @@
-# Configure seeds here, for example:
-dnsseed.example.com:
-  connect: ["127.0.0.1", 9999]
-  port: 8333
-  cache: 1024
-  send: 16
-  interval: 10
+# listen host / port
+listen: ["0.0.0.0", 53]
 
-dnsseed.test.example.com:
-  connect: ["127.0.0.1", 19999]
-  port: 18333
-  cache: 1024
-  send: 16
-  interval: 60
+# Configure seeds here, for example:
+seeds:
+  dnsseed.example.com:
+    # how to connect to bitcoin-ruby-node
+    connect: ["127.0.0.1", 9999]
+    # default port for that network
+    port: 8333
+    # how many addresses to cache
+    cache: 1024
+    # how many addresses to send
+    send: 16
+    # how often the cache is updated (in seconds)
+    interval: 10
+    # static addresses included in every response
+    static: ["127.0.01"]
+
+  dnsseed.test.example.com:
+    connect: ["127.0.0.1", 19999]
+    port: 18333
+    cache: 1024
+    send: 16
+    interval: 60
+    static: []
