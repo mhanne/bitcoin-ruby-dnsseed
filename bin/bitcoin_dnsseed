@@ -2,6 +2,7 @@
 
 require 'bundler'
 Bundler.setup
+require 'eventmachine'
 require 'bitcoin/node'
 require 'socket'
 require 'json'
@@ -29,6 +30,10 @@ class AddrFetcher < EM::Connection
     send_data '{"id": 0, "method": "addrs", "params": { "count": ' + options[:cache].to_s + '}}' + "\x00"
   end
 
+  def connection_completed
+    @dns.logger.info { "Connected to bitcoin node for #{@name}" }
+  end
+
   def receive_data(data)
     @buf.extract(data).each do |packet|
       json = JSON.load(packet)["result"]
@@ -50,26 +55,29 @@ class AddrFetcher < EM::Connection
   end
 end
 
-dns = RubyDNS::Server.new
-CONFIG.each do |name, opts|
-  dns.match(name.to_s, Resolv::DNS::Resource::IN::A) do |tx|
-    dns.addrs[name].weighted_sample(opts[:send]) {|a| 10800 - a[2] }.uniq.each do |addr|
-      begin
-        ttl = opts[:ttl].to_i || ((10800 - addr[2]) / 30)
-        tx.respond!(addr[0], ttl: ttl)
-      rescue
-        # ignore faulty addrs ("localhost" etc)
+RubyDNS.run_server(listen: [[:udp, "0.0.0.0", 53], [:tcp, "0.0.0.0", 53]]) do
+
+  on(:start) do
+    logger.info { "DNS Server listening on 0.0.0.0:53" }
+    EM.run do
+      CONFIG.each do |name, opts|
+        AddrFetcher.run(*opts[:connect], name, self, opts)
       end
     end
   end
-end
-
-EM.run do
-  EventMachine.open_datagram_socket("0.0.0.0", 53, RubyDNS::UDPHandler, dns)
-  EventMachine.start_server("0.0.0.0", 53, RubyDNS::TCPHandler, dns)
-  dns.logger.info { "DNS Server listening on 0.0.0.0:53" }
 
   CONFIG.each do |name, opts|
-    AddrFetcher.run(*opts[:connect], name, dns, opts)
+    match(/#{name}/i, Resolv::DNS::Resource::IN::A) do |tx|
+      next tx.fail!(:NXDomain)  unless addrs
+      addrs[name].weighted_sample(opts[:send]) {|a| 10800 - a[2] }.uniq.each do |addr|
+        begin
+          ttl = opts[:ttl].to_i || ((10800 - addr[2]) / 30)
+          tx.respond!(addr[0], ttl: ttl)
+        rescue
+          # ignore faulty addrs ("localhost" etc)
+        end
+      end
+    end
   end
+
 end

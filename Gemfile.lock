@@ -26,14 +26,21 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
+    celluloid (0.16.0)
+      timers (~> 4.0.0)
+    celluloid-io (0.16.2)
+      celluloid (>= 0.16.0)
+      nio4r (>= 1.1.0)
     eventmachine (1.0.7)
     ffi (1.9.8)
-    rainbow (2.0.0)
-    rexec (1.5.2)
-      rainbow
-    rubydns (0.6.7)
-      eventmachine (~> 1.0.0)
-      rexec (~> 1.5.1)
+    hitimes (1.2.2)
+    nio4r (1.1.0)
+    rubydns (1.0.1)
+      celluloid (~> 0.16.0)
+      celluloid-io (~> 0.16.2)
+      timers (~> 4.0.1)
+    timers (4.0.1)
+      hitimes
 
 PLATFORMS
   ruby
@@ -43,5 +50,6 @@ DEPENDENCIES
   bitcoin-ruby-blockchain!
   bitcoin-ruby-node!
   bitcoin-ruby-wallet!
+  eventmachine
   ffi
-  rubydns (~> 0.6.7)
+  rubydns

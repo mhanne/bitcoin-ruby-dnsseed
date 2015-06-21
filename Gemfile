@@ -1,6 +1,7 @@
 source "http://rubygems.org"
 
 gem 'ffi'
+gem 'eventmachine'
 
 gem 'bitcoin-ruby',
   git: "git://github.com/mhanne/bitcoin-ruby", branch: "next", require: "bitcoin"
@@ -18,4 +19,5 @@ gem 'bitcoin-ruby-node',
   git: "git://github.com/mhanne/bitcoin-ruby-node"
   # path: '../bitcoin-ruby-node'
 
-gem 'rubydns', '~> 0.6.7'
+gem 'rubydns'
+
