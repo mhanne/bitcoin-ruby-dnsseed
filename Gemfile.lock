@@ -1,25 +1,25 @@
 GIT
   remote: git://github.com/mhanne/bitcoin-ruby
-  revision: c2d779ecaf83adf7ff383a9b140387422a0349ba
+  revision: 7e15b114eea005bc2334be852a2b2c234ae68828
   branch: next
   specs:
     bitcoin-ruby (0.0.6)
 
 GIT
   remote: git://github.com/mhanne/bitcoin-ruby-blockchain
-  revision: 117a69507bf5034025f13fa5bc631e0570e5db8a
+  revision: 410e9d3e3f0daa3171df29094207abc659038931
   specs:
     bitcoin-ruby-blockchain (0.0.1)
 
 GIT
   remote: git://github.com/mhanne/bitcoin-ruby-node
-  revision: 29605f8454b5f7e21eb57de984eaad40194d6262
+  revision: 803366e6de41452d0b5416aca1e2f3f82f4edc50
   specs:
     bitcoin-ruby-node (0.0.1)
 
 GIT
   remote: git://github.com/mhanne/bitcoin-ruby-wallet
-  revision: 953a26820ad87ea8d20a1762ec291cff28074040
+  revision: 2a3dd39590c5a4dd303507d11dd11114a7a68604
   specs:
     bitcoin-ruby-wallet (0.0.1)
 
@@ -31,15 +31,15 @@ GEM
     celluloid-io (0.16.2)
       celluloid (>= 0.16.0)
       nio4r (>= 1.1.0)
-    eventmachine (1.0.7)
-    ffi (1.9.8)
-    hitimes (1.2.2)
-    nio4r (1.1.0)
-    rubydns (1.0.1)
-      celluloid (~> 0.16.0)
-      celluloid-io (~> 0.16.2)
+    eventmachine (1.0.8)
+    ffi (1.9.10)
+    hitimes (1.2.3)
+    nio4r (1.1.1)
+    rubydns (1.0.2)
+      celluloid (= 0.16.0)
+      celluloid-io (= 0.16.2)
       timers (~> 4.0.1)
-    timers (4.0.1)
+    timers (4.0.4)
       hitimes
 
 PLATFORMS
