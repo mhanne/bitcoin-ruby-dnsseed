@@ -1,19 +1,19 @@
 GIT
   remote: git://github.com/mhanne/bitcoin-ruby
-  revision: 7e15b114eea005bc2334be852a2b2c234ae68828
+  revision: fdf124f43700dfb1db6c3b180d91fa2f3805debd
   branch: next
   specs:
-    bitcoin-ruby (0.0.6)
+    bitcoin-ruby (0.0.8)
 
 GIT
   remote: git://github.com/mhanne/bitcoin-ruby-blockchain
-  revision: 410e9d3e3f0daa3171df29094207abc659038931
+  revision: 47648fbc6dbc16b172a80206cef7a25a14369e38
   specs:
     bitcoin-ruby-blockchain (0.0.1)
 
 GIT
   remote: git://github.com/mhanne/bitcoin-ruby-node
-  revision: 803366e6de41452d0b5416aca1e2f3f82f4edc50
+  revision: 90039ea49abac197f3feedb7c73e22a5f0ee1f30
   specs:
     bitcoin-ruby-node (0.0.1)
 
